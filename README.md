@@ -60,3 +60,8 @@
   76|19|19_690_718|Increase of 17 because I miscalculated and meant to increase by difference between target and last answer (supposed to increas by 19)
   76|20|19_690_719|Still didn't realize my previous miscalculation so increased by 1
   77|21|19_690_720|Target hit!
+
+  Other notes:
+  - If we don't change the verb, the last 3 digits never change
+  - Incrementing the verb by 1 did indeed increment the result by 1
+</details>
