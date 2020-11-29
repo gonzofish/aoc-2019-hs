@@ -11,40 +11,23 @@ readInput contents = (read code) : readInput (drop (length code) contents)
     code = takeWhile (/= ',') contents
 
 process :: [Int] -> [Int] -> Int -> [Int]
-process [] state _ = state
-process _ [] _ = []
 process (99 : _) state _ = state
-process (1 : pos1 : pos2 : pos3 : _) state position = process rest newState newPosition
+process slice state position = process rest newState newPosition
   where
-    newState = add pos1 pos2 pos3 state
-    newPosition = position + 4
-    (_, rest) = splitAt newPosition newState
-process (2 : pos1 : pos2 : pos3 : _) state position = process rest newState newPosition
-  where
-    newState = multiply pos1 pos2 pos3 state
+    newState = handleOpCode slice state
     newPosition = position + 4
     (_, rest) = splitAt newPosition newState
 
--- process (2 : pos1 : pos2 : pos3 : _) state = process rest (multiply pos1 pos2 pos3 state)
-
-{-
-  foldl process input input
-  process (1:rest) current = add
--}
-
-add :: Int -> Int -> Int -> [Int] -> [Int]
-add pos1 pos2 pos3 state =
-  setValue state pos3 (value1 + value2)
+handleOpCode :: [Int] -> [Int] -> [Int]
+handleOpCode (opcode : pos1 : pos2 : pos3 : _) state = setValue state pos3 $ operation value1 value2
   where
+    operation = getOperation opcode
     value1 = getValue state pos1
     value2 = getValue state pos2
 
-multiply :: Int -> Int -> Int -> [Int] -> [Int]
-multiply pos1 pos2 pos3 state =
-  setValue state pos3 (value1 * value2)
-  where
-    value1 = getValue state pos1
-    value2 = getValue state pos2
+getOperation :: (Eq a1, Num a1, Num a2) => a1 -> a2 -> a2 -> a2
+getOperation 1 = (+)
+getOperation 2 = (*)
 
 getValue :: [Int] -> Int -> Int
 getValue (first : rest) position
