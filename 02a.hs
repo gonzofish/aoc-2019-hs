@@ -12,14 +12,15 @@ readInput contents = (read code) : readInput (drop (length code) contents)
 
 process :: [Int] -> [Int] -> Int -> [Int]
 process (99 : _) state _ = state
-process slice state position = process rest newState newPosition
+process slice state position = process nextSlice nextState nextPosition
   where
-    newState = handleOpCode slice state
-    newPosition = position + 4
-    (_, rest) = splitAt newPosition newState
+    nextState = handleOpCode slice state
+    nextPosition = position + 4
+    (_, nextSlice) = splitAt nextPosition nextState
 
 handleOpCode :: [Int] -> [Int] -> [Int]
-handleOpCode (opcode : pos1 : pos2 : pos3 : _) state = setValue state pos3 $ operation value1 value2
+handleOpCode (opcode : pos1 : pos2 : pos3 : _) state =
+  setValue state pos3 $ operation value1 value2
   where
     operation = getOperation opcode
     value1 = getValue state pos1
